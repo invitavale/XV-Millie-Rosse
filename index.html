@@ -119,6 +119,20 @@
   #reg h2{margin:0 0 2px;font:700 18px/1.3 var(--caps);letter-spacing:.14em;text-transform:uppercase;color:#e9eefb}
   #reg .scr{font-size:44px;margin:2px 0 10px;color:#fff;text-shadow:0 0 10px rgba(170,200,255,.8),0 0 2px #fff}
   #reg .nota{margin:0 4px 16px;font:italic 600 15px/1.5 Lora,Georgia,serif;color:#dbe4fa;letter-spacing:0;text-transform:none}
+  #reg .op1{border:1px solid rgba(207,214,230,.55);border-radius:16px;background:rgba(255,255,255,.1);padding:16px 16px 14px;margin:0 0 14px}
+  #reg .op1 svg{width:30px;height:30px;fill:#fff;filter:drop-shadow(0 0 6px rgba(170,200,255,.8));margin-bottom:4px}
+  #reg .op1 em{display:block;font:700 10px var(--caps);letter-spacing:.18em;text-transform:uppercase;color:#b9c8ee;font-style:normal;margin-bottom:4px}
+  #reg .op1 b{display:block;font:italic 700 19px/1.3 Lora,Georgia,serif;color:#fff;margin-bottom:4px}
+  #reg .op1 span{display:block;font:italic 500 14px/1.45 Lora,Georgia,serif;color:#dbe4fa}
+  #reg .sep2{display:flex;align-items:center;gap:10px;margin:0 0 12px;font:700 11px var(--caps);letter-spacing:.18em;text-transform:uppercase;color:#b9c8ee}
+  #reg .sep2::before,#reg .sep2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(207,214,230,.7),transparent)}
+  #verBanco{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:0 0 16px;padding:12px 18px;box-sizing:border-box;cursor:pointer;
+    font:700 13px var(--caps);letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.75);border-radius:999px}
+  #verBanco::after{content:"\203A";font:700 20px/1 Georgia,serif;transition:transform .3s;transform:rotate(90deg)}
+  #verBanco[aria-expanded="true"]::after{transform:rotate(-90deg)}
+  #reg ul[hidden]{display:none}
+  #reg ul:not([hidden]){animation:abrirBanco .45s ease both}
+  @keyframes abrirBanco{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
   #reg ul{list-style:none;margin:0 0 18px;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;text-align:left}
   #reg li{border:1px solid rgba(207,214,230,.45);border-radius:14px;background:rgba(255,255,255,.08);padding:11px 14px;min-width:0;position:relative}
   #reg li em{display:block;font:700 10px var(--caps);letter-spacing:.16em;text-transform:uppercase;color:#b9c8ee;font-style:normal;margin-bottom:3px}
@@ -333,8 +347,16 @@
 <dialog id="reg" aria-labelledby="rt">
   <h2 id="rt">Mesa de regalos</h2>
   <div class="scr">Con cariño</div>
-  <p class="nota">Tu presencia es mi mejor regalo; si deseas obsequiarme algo, puedes hacerlo aquí:</p>
-  <ul>
+  <p class="nota">Tu presencia es mi mejor regalo; si deseas obsequiarme algo:</p>
+  <div class="op1">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7h-2.2A3 3 0 0 0 12 3.8 3 3 0 0 0 6.2 7H4a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h1v8a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-8h1a1 1 0 0 0 1-1V8a1 1 0 0 0-1-1zM15 5a1 1 0 1 1 0 2h-2a2 2 0 0 1 2-2zM9 5a2 2 0 0 1 2 2H9a1 1 0 1 1 0-2zm2 15H7v-8h4v8zm0-10H5V9h6v1zm6 10h-4v-8h4v8zm2-10h-6V9h6v1z"/></svg>
+    <em>Opción 1</em>
+    <b>El regalo de tu preferencia</b>
+    <span>Cualquier detalle que elijas será recibido con mucho cariño.</span>
+  </div>
+  <div class="sep2">Opción 2</div>
+  <button type="button" id="verBanco" aria-expanded="false" aria-controls="banco" onclick="verDatos(this)">Ver datos bancarios</button>
+  <ul id="banco" hidden>
     <li><em>Banco</em><b>Banreservas</b></li>
     <li class="cta"><em>Número de cuenta</em><b id="ncta">9605316083</b><button type="button" class="copiar" onclick="copiarCta(this)">Copiar</button></li>
     <li><em>A nombre de</em><b>Pérez Rodríguez</b></li>
@@ -344,6 +366,12 @@
 <script>
   vest.addEventListener("click",function(e){if(e.target===vest)vest.close()});
   reg.addEventListener("click",function(e){if(e.target===reg)reg.close()});
+  function verDatos(b){
+    var u=document.getElementById("banco"), abrir=u.hidden;
+    u.hidden=!abrir; b.setAttribute("aria-expanded",abrir);
+    b.firstChild.nodeValue=abrir?"Ocultar datos bancarios":"Ver datos bancarios";
+  }
+  reg.addEventListener("close",function(){var u=document.getElementById("banco"),b=document.getElementById("verBanco");u.hidden=true;b.setAttribute("aria-expanded","false");b.firstChild.nodeValue="Ver datos bancarios"});
   function copiarCta(b){
     var n="9605316083", ok=function(){b.textContent="¡Copiado!";setTimeout(function(){b.textContent="Copiar"},1800)};
     if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(n).then(ok,function(){fb()})}else fb();
